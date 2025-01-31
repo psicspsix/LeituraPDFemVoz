@@ -168,8 +168,6 @@
 
         let indiceAtual = 0; // Índice da palavra atual sendo lida
 
-        let intervalo = null; // Intervalo para sincronizar a tarja
-
 
 
         // Função para extrair texto do PDF
@@ -254,59 +252,43 @@
 
 
 
-            // Inicia a leitura
+            // Evento para acompanhar a leitura
 
-            speechSynthesis.speak(utterance);
+            utterance.onboundary = (event) => {
 
+                if (event.name === 'word') {
 
+                    // Remove o destaque da palavra anterior
 
-            // Sincroniza a tarja com a leitura
+                    const palavrasElementos = document.querySelectorAll('#conteudoPDF .highlight');
 
-            if (intervalo) clearInterval(intervalo);
-
-            intervalo = setInterval(() => {
-
-                if (speechSynthesis.speaking && !speechSynthesis.paused) {
-
-                    const tempoAtual = (speechSynthesis.paused) ? 0 : (window.speechSynthesis.currentTime || 0);
-
-                    const palavrasLidas = Math.floor(tempoAtual * utterance.rate * 2); // Aproximação de palavras por segundo
-
-                    if (palavrasLidas > indiceAtual) {
-
-                        indiceAtual = palavrasLidas;
+                    palavrasElementos.forEach(palavra => palavra.classList.remove('highlight'));
 
 
 
-                        // Remove o destaque da palavra anterior
+                    // Destaca a palavra atual
 
-                        const palavrasElementos = document.querySelectorAll('#conteudoPDF .highlight');
+                    const palavraAtual = document.getElementById(`palavra-${indiceAtual}`);
 
-                        palavrasElementos.forEach(palavra => palavra.classList.remove('highlight'));
+                    if (palavraAtual) {
 
+                        palavraAtual.classList.add('highlight');
 
-
-                        // Destaca a palavra atual
-
-                        const palavraAtual = document.getElementById(`palavra-${indiceAtual}`);
-
-                        if (palavraAtual) {
-
-                            palavraAtual.classList.add('highlight');
-
-                            palavraAtual.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                        }
+                        palavraAtual.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
                     }
 
-                } else if (!speechSynthesis.speaking) {
 
-                    clearInterval(intervalo); // Para o intervalo quando a leitura termina
+
+                    indiceAtual++;
 
                 }
 
-            }, 100); // Verifica a cada 100ms
+            };
+
+
+
+            speechSynthesis.speak(utterance);
 
         }
 
