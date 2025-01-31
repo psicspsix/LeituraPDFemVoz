@@ -4,213 +4,223 @@
 
 <head>
 
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Leitor de PDF em Voz Alta</title>
+    <title>Leitor de PDF em Voz Alta</title>
 
-  <style>
+    <style>
 
-    body {
+        body {
 
-      font-family: Arial, sans-serif;
+            font-family: Arial, sans-serif;
 
-      margin: 20px;
+            margin: 20px;
 
-    }
+        }
 
-    h1 {
+        h1 {
 
-      color: #333;
+            color: #333;
 
-    }
+        }
 
-    .controls {
+        .controls {
 
-      margin: 20px 0;
+            margin: 20px 0;
 
-    }
+        }
 
-    .controls label {
+        .controls label {
 
-      margin-right: 10px;
+            margin-right: 10px;
 
-    }
+        }
 
-    .controls input[type="range"] {
+        .controls input[type="range"] {
 
-      width: 100px;
+            width: 100px;
 
-    }
+        }
 
-    #conteudoPDF {
+        #conteudoPDF {
 
-      margin-top: 20px;
+            margin-top: 20px;
 
-      padding: 10px;
+            padding: 10px;
 
-      border: 1px solid #ccc;
+            border: 1px solid #ccc;
 
-      background-color: #f9f9f9;
+            background-color: #f9f9f9;
 
-      max-height: 300px;
+            max-height: 300px;
 
-      overflow-y: auto;
+            overflow-y: auto;
 
-    }
+        }
 
-  </style>
+    </style>
 
 </head>
 
 <body>
 
-  <h1>Leitor de PDF em Voz Alta</h1>
+    <h1>Leitor de PDF em Voz Alta</h1>
 
 
 
-  <!-- Controles de volume e velocidade -->
+    <!-- Controles de volume e velocidade -->
 
-  <div class="controls">
+    <div class="controls">
 
-    <label for="volume">Volume:</label>
+        <label for="volume">Volume:</label>
 
-    <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+        <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
 
-     
+        
 
-    <label for="rate">Velocidade:</label>
+        <label for="rate">Velocidade:</label>
 
-    <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
 
-  </div>
+    </div>
 
 
 
-  <!-- Botão para ler o PDF fixo -->
+    <!-- Botão para ler o PDF fixo -->
 
-  <button id="lerPDFFixo">Ler PDF Fixo em Voz Alta</button>
+    <button id="lerPDFFixo">Ler PDF Fixo em Voz Alta</button>
 
 
 
-  <!-- Upload de PDF -->
+    <!-- Upload de PDF -->
 
-  <input type="file" id="uploadPDF" accept="application/pdf">
+    <input type="file" id="uploadPDF" accept="application/pdf">
 
-  <button id="lerPDFUpload">Ler PDF Carregado em Voz Alta</button>
+    <button id="lerPDFUpload">Ler PDF Carregado em Voz Alta</button>
 
 
 
-  <!-- Área para exibir o conteúdo do PDF -->
+    <!-- Área para exibir o conteúdo do PDF -->
 
-  <div id="conteudoPDF"></div>
+    <div id="conteudoPDF"></div>
 
 
 
-  <!-- Scripts -->
+    <!-- Scripts -->
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
 
-  <script>
+    <script>
 
-    // Função para extrair texto do PDF
+        // Função para extrair texto do PDF
 
-    async function extractTextFromPDF(url) {
+        async function extractTextFromPDF(url) {
 
-      const pdf = await pdfjsLib.getDocument(url).promise;
+            const pdf = await pdfjsLib.getDocument(url).promise;
 
-      let textoCompleto = '';
+            let textoCompleto = '';
 
 
 
-      for (let i = 1; i <= pdf.numPages; i++) {
+            for (let i = 1; i <= pdf.numPages; i++) {
 
-        const page = await pdf.getPage(i);
+                const page = await pdf.getPage(i);
 
-        const textContent = await page.getTextContent();
+                const textContent = await page.getTextContent();
 
-        textoCompleto += textContent.items.map(item => item.str).join(' ');
 
-      }
 
+                // Ajuste para preservar espaços entre palavras
 
+                textoCompleto += textContent.items.map(item => {
 
-      return textoCompleto;
+                    // Se o item tem uma propriedade "hasEOL" (fim de linha), adicionamos um espaço
 
-    }
+                    return item.str + (item.hasEOL ? ' ' : '');
 
+                }).join('');
 
+            }
 
-    // Função para ler texto em voz alta
 
-    function lerTexto(texto) {
 
-      const utterance = new SpeechSynthesisUtterance(texto);
+            return textoCompleto;
 
-      utterance.lang = 'pt-BR'; // Idioma português do Brasil
+        }
 
-      utterance.volume = document.getElementById('volume').value;
 
-      utterance.rate = document.getElementById('rate').value;
 
-      speechSynthesis.speak(utterance);
+        // Função para ler texto em voz alta
 
-    }
+        function lerTexto(texto) {
 
+            const utterance = new SpeechSynthesisUtterance(texto);
 
+            utterance.lang = 'pt-BR'; // Idioma português do Brasil
 
-    // Ler PDF fixo
+            utterance.volume = document.getElementById('volume').value;
 
-    document.getElementById('lerPDFFixo').addEventListener('click', async () => {
+            utterance.rate = document.getElementById('rate').value;
 
-      const url = 'https://raw.githubusercontent.com/psicspsix/LeituraPDFemVoz/main/PDFparaLeituraemVoz.pdf';
+            speechSynthesis.speak(utterance);
 
-      const texto = await extractTextFromPDF(url);
+        }
 
-      document.getElementById('conteudoPDF').innerText = texto;
 
-      lerTexto(texto);
 
-    });
+        // Ler PDF fixo
 
+        document.getElementById('lerPDFFixo').addEventListener('click', async () => {
 
+            const url = 'https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/PDFparaLeituraemVoz.pdf';
 
-    // Ler PDF carregado
+            const texto = await extractTextFromPDF(url);
 
-    document.getElementById('lerPDFUpload').addEventListener('click', async () => {
+            document.getElementById('conteudoPDF').innerText = texto;
 
-      const file = document.getElementById('uploadPDF').files[0];
+            lerTexto(texto);
 
-      if (!file) {
+        });
 
-        alert('Por favor, selecione um arquivo PDF.');
 
-        return;
 
-      }
+        // Ler PDF carregado
 
+        document.getElementById('lerPDFUpload').addEventListener('click', async () => {
 
+            const file = document.getElementById('uploadPDF').files[0];
 
-      const fileReader = new FileReader();
+            if (!file) {
 
-      fileReader.onload = async function(event) {
+                alert('Por favor, selecione um arquivo PDF.');
 
-        const url = event.target.result;
+                return;
 
-        const texto = await extractTextFromPDF(url);
+            }
 
-        document.getElementById('conteudoPDF').innerText = texto;
 
-        lerTexto(texto);
 
-      };
+            const fileReader = new FileReader();
 
-      fileReader.readAsDataURL(file);
+            fileReader.onload = async function(event) {
 
-    });
+                const url = event.target.result;
 
-  </script>
+                const texto = await extractTextFromPDF(url);
+
+                document.getElementById('conteudoPDF').innerText = texto;
+
+                lerTexto(texto);
+
+            };
+
+            fileReader.readAsDataURL(file);
+
+        });
+
+    </script>
 
 </body>
 
