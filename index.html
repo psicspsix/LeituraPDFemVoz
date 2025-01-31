@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Leitor de PDF em Voz Alta</title>
+
+  <style>
+
+    body {
+
+      font-family: Arial, sans-serif;
+
+      margin: 20px;
+
+    }
+
+    h1 {
+
+      color: #333;
+
+    }
+
+    .controls {
+
+      margin: 20px 0;
+
+    }
+
+    .controls label {
+
+      margin-right: 10px;
+
+    }
+
+    .controls input[type="range"] {
+
+      width: 100px;
+
+    }
+
+    #conteudoPDF {
+
+      margin-top: 20px;
+
+      padding: 10px;
+
+      border: 1px solid #ccc;
+
+      background-color: #f9f9f9;
+
+      max-height: 300px;
+
+      overflow-y: auto;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <h1>Leitor de PDF em Voz Alta</h1>
+
+
+
+  <!-- Controles de volume e velocidade -->
+
+  <div class="controls">
+
+    <label for="volume">Volume:</label>
+
+    <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+
+     
+
+    <label for="rate">Velocidade:</label>
+
+    <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+
+  </div>
+
+
+
+  <!-- Botão para ler o PDF fixo -->
+
+  <button id="lerPDFFixo">Ler PDF Fixo em Voz Alta</button>
+
+
+
+  <!-- Upload de PDF -->
+
+  <input type="file" id="uploadPDF" accept="application/pdf">
+
+  <button id="lerPDFUpload">Ler PDF Carregado em Voz Alta</button>
+
+
+
+  <!-- Área para exibir o conteúdo do PDF -->
+
+  <div id="conteudoPDF"></div>
+
+
+
+  <!-- Scripts -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+
+  <script>
+
+    // Função para extrair texto do PDF
+
+    async function extractTextFromPDF(url) {
+
+      const pdf = await pdfjsLib.getDocument(url).promise;
+
+      let textoCompleto = '';
+
+
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+
+        const page = await pdf.getPage(i);
+
+        const textContent = await page.getTextContent();
+
+        textoCompleto += textContent.items.map(item => item.str).join(' ');
+
+      }
+
+
+
+      return textoCompleto;
+
+    }
+
+
+
+    // Função para ler texto em voz alta
+
+    function lerTexto(texto) {
+
+      const utterance = new SpeechSynthesisUtterance(texto);
+
+      utterance.lang = 'pt-BR'; // Idioma português do Brasil
+
+      utterance.volume = document.getElementById('volume').value;
+
+      utterance.rate = document.getElementById('rate').value;
+
+      speechSynthesis.speak(utterance);
+
+    }
+
+
+
+    // Ler PDF fixo
+
+    document.getElementById('lerPDFFixo').addEventListener('click', async () => {
+
+      const url = 'https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/PDFparaLeituraemVoz.pdf';
+
+      const texto = await extractTextFromPDF(url);
+
+      document.getElementById('conteudoPDF').innerText = texto;
+
+      lerTexto(texto);
+
+    });
+
+
+
+    // Ler PDF carregado
+
+    document.getElementById('lerPDFUpload').addEventListener('click', async () => {
+
+      const file = document.getElementById('uploadPDF').files[0];
+
+      if (!file) {
+
+        alert('Por favor, selecione um arquivo PDF.');
+
+        return;
+
+      }
+
+
+
+      const fileReader = new FileReader();
+
+      fileReader.onload = async function(event) {
+
+        const url = event.target.result;
+
+        const texto = await extractTextFromPDF(url);
+
+        document.getElementById('conteudoPDF').innerText = texto;
+
+        lerTexto(texto);
+
+      };
+
+      fileReader.readAsDataURL(file);
+
+    });
+
+  </script>
+
+</body>
+
+</html>
