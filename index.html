@@ -332,15 +332,13 @@
 
         const textContent = await page.getTextContent();
 
-        textoCompleto += textContent.items.map(item => item.str).join(' ') + ' ';
+        textoCompleto += textContent.items.map(item => item.str + (item.hasEOL ? ' ' : '')).join('');
 
       }
 
 
 
-      // Remove espaços extras e divide o texto em palavras
-
-      return textoCompleto.replace(/\s+/g, ' ').trim();
+      return textoCompleto;
 
     }
 
@@ -394,17 +392,25 @@
 
         if (event.name === 'word') {
 
-          const palavraIndex = event.charIndex; // Índice da palavra atual
+          const palavrasElementos = document.querySelectorAll('#conteudoPDF .highlight');
 
-          indiceAtual = palavras.findIndex((palavra, index) => {
+          palavrasElementos.forEach(palavra => palavra.classList.remove('highlight'));
 
-            const inicioTexto = texto.indexOf(palavra, palavraIndex);
 
-            return inicioTexto === event.charIndex;
 
-          });
+          const palavraAtual = document.getElementById(`palavra-${indiceAtual}`);
 
-          atualizarTarja();
+          if (palavraAtual) {
+
+            palavraAtual.classList.add('highlight');
+
+            palavraAtual.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          }
+
+
+
+          indiceAtual++;
 
         }
 
@@ -412,47 +418,7 @@
 
 
 
-      // Iniciar intervalo para atualizar a tarja (2 segundos)
-
-      if (intervaloAtualizacao) clearInterval(intervaloAtualizacao);
-
-      intervaloAtualizacao = setInterval(atualizarTarja, 2000);
-
-
-
       speechSynthesis.speak(utterance);
-
-    }
-
-
-
-    // Função para atualizar a tarja (destaque da palavra atual)
-
-    function atualizarTarja() {
-
-      const palavrasElementos = document.querySelectorAll('#conteudoPDF .highlight');
-
-      palavrasElementos.forEach(palavra => palavra.classList.remove('highlight'));
-
-
-
-      const palavraAtual = document.getElementById(`palavra-${indiceAtual}`);
-
-      if (palavraAtual) {
-
-        palavraAtual.classList.add('highlight');
-
-        palavraAtual.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-      }
-
-
-
-      // Atualizar barra de progresso
-
-      const progresso = (indiceAtual / palavras.length) * 100;
-
-      document.getElementById('barraProgresso').style.width = `${progresso}%`;
 
     }
 
