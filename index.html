@@ -88,7 +88,7 @@
 
 
 
-  <!-- Botão para ler o PDF fixo -->
+  <!-- BotÃ£o para ler o PDF fixo -->
 
   <button id="lerPDFFixo">Ler PDF Fixo em Voz Alta</button>
 
@@ -102,7 +102,7 @@
 
 
 
-  <!-- Área para exibir o conteúdo do PDF -->
+  <!-- Ãrea para exibir o conteÃºdo do PDF -->
 
   <div id="conteudoPDF"></div>
 
@@ -114,7 +114,7 @@
 
   <script>
 
-    // Função para extrair texto do PDF
+    // FunÃ§Ã£o para extrair texto do PDF
 
     async function extractTextFromPDF(url) {
 
@@ -142,13 +142,13 @@
 
 
 
-    // Função para ler texto em voz alta
+    // FunÃ§Ã£o para ler texto em voz alta
 
     function lerTexto(texto) {
 
       const utterance = new SpeechSynthesisUtterance(texto);
 
-      utterance.lang = 'pt-BR'; // Idioma português do Brasil
+      utterance.lang = 'pt-BR'; // Idioma portuguÃªs do Brasil
 
       utterance.volume = document.getElementById('volume').value;
 
@@ -164,7 +164,7 @@
 
     document.getElementById('lerPDFFixo').addEventListener('click', async () => {
 
-      const url = 'https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/PDFparaLeituraemVoz.pdf';
+      const url = 'https://raw.githubusercontent.com/psicspsix/LeituraPDFemVoz/main/PDFparaLeituraemVoz.pdf';
 
       const texto = await extractTextFromPDF(url);
 
