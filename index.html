@@ -64,6 +64,22 @@
 
             overflow-y: auto;
 
+            line-height: 1.6;
+
+            position: relative;
+
+        }
+
+        .highlight {
+
+            background-color: yellow;
+
+            color: black;
+
+            padding: 2px 4px;
+
+            border-radius: 3px;
+
         }
 
         button {
@@ -148,6 +164,10 @@
 
         let utterance = null;
 
+        let palavras = []; // Array para armazenar as palavras do texto
+
+        let indiceAtual = 0; // Índice da palavra atual sendo lida
+
 
 
         // Função para extrair texto do PDF
@@ -198,6 +218,14 @@
 
 
 
+            // Divide o texto em palavras
+
+            palavras = texto.split(/\s+/);
+
+            indiceAtual = 0;
+
+
+
             utterance = new SpeechSynthesisUtterance(texto);
 
             utterance.lang = 'pt-BR'; // Idioma português do Brasil
@@ -224,7 +252,61 @@
 
 
 
+            // Evento para acompanhar a leitura
+
+            utterance.onboundary = (event) => {
+
+                if (event.name === 'word') {
+
+                    // Remove o destaque da palavra anterior
+
+                    const palavrasElementos = document.querySelectorAll('#conteudoPDF .highlight');
+
+                    palavrasElementos.forEach(palavra => palavra.classList.remove('highlight'));
+
+
+
+                    // Destaca a palavra atual
+
+                    const palavraAtual = document.getElementById(`palavra-${indiceAtual}`);
+
+                    if (palavraAtual) {
+
+                        palavraAtual.classList.add('highlight');
+
+                        palavraAtual.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    }
+
+
+
+                    indiceAtual++;
+
+                }
+
+            };
+
+
+
             speechSynthesis.speak(utterance);
+
+        }
+
+
+
+        // Função para exibir o texto com IDs nas palavras
+
+        function exibirTexto(texto) {
+
+            const palavras = texto.split(/\s+/);
+
+            const conteudoPDF = document.getElementById('conteudoPDF');
+
+            conteudoPDF.innerHTML = palavras.map((palavra, index) => {
+
+                return `<span id="palavra-${index}">${palavra}</span>`;
+
+            }).join(' ');
 
         }
 
@@ -238,7 +320,7 @@
 
             const texto = await extractTextFromPDF(url);
 
-            document.getElementById('conteudoPDF').innerText = texto;
+            exibirTexto(texto);
 
             lerTexto(texto);
 
@@ -270,7 +352,7 @@
 
                 const texto = await extractTextFromPDF(url);
 
-                document.getElementById('conteudoPDF').innerText = texto;
+                exibirTexto(texto);
 
                 lerTexto(texto);
 
