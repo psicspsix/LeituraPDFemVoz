@@ -332,13 +332,15 @@
 
         const textContent = await page.getTextContent();
 
-        textoCompleto += textContent.items.map(item => item.str).join(' ');
+        textoCompleto += textContent.items.map(item => item.str).join(' ') + ' ';
 
       }
 
 
 
-      return textoCompleto;
+      // Remove espaços extras e divide o texto em palavras
+
+      return textoCompleto.replace(/\s+/g, ' ').trim();
 
     }
 
@@ -383,28 +385,6 @@
       const seletorVoz = document.getElementById('seletorVoz');
 
       utterance.voice = vozes[seletorVoz.value];
-
-
-
-      // Atualiza volume, velocidade e tom em tempo real
-
-      document.getElementById('volume').addEventListener('input', () => {
-
-        utterance.volume = document.getElementById('volume').value;
-
-      });
-
-      document.getElementById('rate').addEventListener('input', () => {
-
-        utterance.rate = document.getElementById('rate').value;
-
-      });
-
-      document.getElementById('pitch').addEventListener('input', () => {
-
-        utterance.pitch = document.getElementById('pitch').value;
-
-      });
 
 
 
