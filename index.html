@@ -4,709 +4,731 @@
 
 <head>
 
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Leitor de PDF em Voz Alta</title>
+  <title>Leitor de PDF em Voz Alta</title>
 
-    <style>
+  <style>
 
-        body {
+    body {
 
-            font-family: Arial, sans-serif;
+      font-family: Arial, sans-serif;
 
-            margin: 20px;
+      margin: 20px;
 
-            background-color: #000;
+      background-color: #000;
 
-            color: #fff;
+      color: #fff;
 
-        }
+    }
 
-        h1, h2 {
+    h1, h2 {
 
-            color: #fff;
+      color: #fff;
 
-        }
+    }
 
-        .controls {
+    .controls {
 
-            margin: 20px 0;
+      margin: 20px 0;
 
-        }
+    }
 
-        .controls label {
+    .controls label {
 
-            margin-right: 10px;
+      margin-right: 10px;
 
-        }
+    }
 
-        .controls input[type="range"] {
+    .controls input[type="range"] {
 
-            width: 100px;
+      width: 100px;
 
-        }
+    }
 
-        #conteudoPDF {
+    #conteudoPDF {
 
-            margin-top: 20px;
+      margin-top: 20px;
 
-            padding: 10px;
+      padding: 10px;
 
-            border: 1px solid #444;
+      border: 1px solid #444;
 
-            background-color: #222;
+      background-color: #222;
 
-            color: #fff;
+      color: #fff;
 
-            max-height: 300px;
+      max-height: 300px;
 
-            overflow-y: auto;
+      overflow-y: auto;
 
-            line-height: 1.6;
+      line-height: 1.6;
 
-            position: relative;
+      position: relative;
 
-        }
+    }
 
-        .highlight {
+    .highlight {
 
-            background-color: yellow;
+      background-color: yellow;
 
-            color: black;
+      color: black;
 
-            padding: 2px 4px;
+      padding: 2px 4px;
 
-            border-radius: 3px;
+      border-radius: 3px;
 
-        }
+    }
 
-        button {
+    button {
 
-            background-color: #444;
+      background-color: #444;
 
-            color: #fff;
+      color: #fff;
 
-            border: none;
+      border: none;
 
-            padding: 10px 15px;
+      padding: 10px 15px;
 
-            margin: 5px;
+      margin: 5px;
 
-            cursor: pointer;
+      cursor: pointer;
 
-        }
+    }
 
-        button:hover {
+    button:hover {
 
-            background-color: #666;
+      background-color: #666;
 
-        }
+    }
 
-        #barraProgresso {
+    #barraProgresso {
 
-            width: 0;
+      width: 0;
 
-            height: 5px;
+      height: 5px;
 
-            background-color: #4caf50;
+      background-color: #4caf50;
 
-            margin-top: 10px;
+      margin-top: 10px;
 
-        }
+    }
 
-        #feedback {
+    #feedback {
 
-            margin-top: 10px;
+      margin-top: 10px;
 
-            font-weight: bold;
+      font-weight: bold;
 
-        }
+    }
 
-        .tema-claro {
+    .tema-claro {
 
-            background-color: #fff;
+      background-color: #fff;
 
-            color: #000;
+      color: #000;
 
-        }
+    }
 
-        .tema-claro #conteudoPDF {
+    .tema-claro h1,
 
-            background-color: #f5f5f5;
+    .tema-claro h2,
 
-            color: #000;
+    .tema-claro .controls label,
 
-            border-color: #ddd;
+    .tema-claro #feedback {
 
-        }
+      color: #000;
 
-        footer {
+    }
 
-            margin-top: 40px;
+    .tema-claro #conteudoPDF {
 
-            font-size: 0.8em;
+      background-color: #f5f5f5;
 
-            color: #888;
+      color: #000;
 
-            text-align: center;
+      border-color: #ddd;
 
-        }
+    }
 
-        a {
+    footer {
 
-            color: #4caf50;
+      margin-top: 40px;
 
-            text-decoration: none;
+      font-size: 0.8em;
 
-        }
+      color: #888;
 
-        a:hover {
+      text-align: center;
 
-            text-decoration: underline;
+    }
 
-        }
+    a {
 
-    </style>
+      color: #4caf50;
+
+      text-decoration: none;
+
+    }
+
+    a:hover {
+
+      text-decoration: underline;
+
+    }
+
+  </style>
 
 </head>
 
 <body>
 
-    <h1>Leitor de PDF em Voz Alta</h1>
+  <h1>Leitor de PDF em Voz Alta</h1>
 
 
 
-    <!-- Controles de volume, velocidade e tom -->
+  <!-- Controles de volume, velocidade e tom -->
 
-    <div class="controls">
+  <div class="controls">
 
-        <label for="volume">Volume:</label>
+    <label for="volume">Volume:</label>
 
-        <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+    <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
 
 
 
-        <label for="rate">Velocidade:</label>
+    <label for="rate">Velocidade:</label>
 
-        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+    <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
 
 
 
-        <label for="pitch">Tom:</label>
+    <label for="pitch">Tom:</label>
 
-        <input type="range" id="pitch" min="0.1" max="2" step="0.1" value="1">
+    <input type="range" id="pitch" min="0.1" max="2" step="0.1" value="1">
 
 
 
-        <label for="seletorVoz">Voz:</label>
+    <label for="seletorVoz">Voz:</label>
 
-        <select id="seletorVoz"></select>
+    <select id="seletorVoz"></select>
 
 
 
-        <button id="alternarTema">Alternar Tema</button>
+    <button id="alternarTema">Alternar Tema</button>
 
-    </div>
+  </div>
 
 
 
-    <!-- Botões de controle -->
+  <!-- Botões de controle -->
 
-    <button id="lerPDFFixo">Ler PDF Fixo em Voz Alta</button>
+  <button id="lerPDFFixo">Ler PDF Fixo em Voz Alta</button>
 
-    <button id="pausarLeitura">Pausar</button>
+  <button id="pausarLeitura">Pausar</button>
 
-    <button id="continuarLeitura">Continuar</button>
+  <button id="continuarLeitura">Continuar</button>
 
-    <button id="repetirLeitura">Repetir</button>
+  <button id="repetirLeitura">Repetir</button>
 
 
 
-    <!-- Upload de PDF -->
+  <!-- Upload de PDF -->
 
-    <input type="file" id="uploadPDF" accept="application/pdf">
+  <input type="file" id="uploadPDF" accept="application/pdf">
 
-    <button id="lerPDFUpload">Ler PDF Carregado em Voz Alta</button>
+  <button id="lerPDFUpload">Ler PDF Carregado em Voz Alta</button>
 
 
 
-    <!-- Área para exibir o conteúdo do PDF -->
+  <!-- Área para exibir o conteúdo do PDF -->
 
-    <div id="conteudoPDF"></div>
+  <div id="conteudoPDF"></div>
 
 
 
-    <!-- Barra de progresso e feedback -->
+  <!-- Barra de progresso e feedback -->
 
-    <div id="barraProgresso"></div>
+  <div id="barraProgresso"></div>
 
-    <div id="feedback"></div>
+  <div id="feedback"></div>
 
 
 
-    <!-- Título e botões para contos de ficção científica -->
+  <!-- Título e botões para contos de ficção científica -->
 
-    <h2>CONTOS DE FICÇÃO CIENTÍFICA DE AUTORES PROMISSORES DA ATUALIDADE</h2>
+  <h2>CONTOS DE FICÇÃO CIENTÍFICA DE AUTORES PROMISSORES DA ATUALIDADE</h2>
 
-    <div id="botoesContos">
+  <div id="botoesContos">
 
-        <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/O%20Ocaso%20da%20Ignor%C3%A2ncia.pdf">O Ocaso da Ignorância</button>
+    <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/O%20Ocaso%20da%20Ignor%C3%A2ncia.pdf">O Ocaso da Ignorância</button>
 
-        <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/Xandra.pdf">Xandra</button>
+    <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/Xandra.pdf">Xandra</button>
 
-        <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/A%20Vontade%20do%20Universo.pdf">A Vontade do Universo</button>
+    <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/A%20Vontade%20do%20Universo.pdf">A Vontade do Universo</button>
 
-        <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/%C3%81ureo%202025.pdf">Áureo (em progresso)</button>
+    <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/%C3%81ureo%202025.pdf">Áureo (em progresso)</button>
 
-        <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/Bootstrap%20TV.pdf">Bootstrap TV (em progresso)</button>
+    <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/Bootstrap%20TV.pdf">Bootstrap TV (em progresso)</button>
 
-        <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/Telecinesia.pdf">Telecinesia</button>
+    <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/Telecinesia.pdf">Telecinesia</button>
 
-        <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/Nanites%20-%20Engenheiros%20da%20Ordem%20e%20do%20Caos.pdf">Livro Nanite (em fase embrionária)</button>
+    <button data-pdf="https://raw.githubusercontent.com/psicspsix/LeitorPDFparaSmartTVs/main/PDFs/Nanites%20-%20Engenheiros%20da%20Ordem%20e%20do%20Caos.pdf">Livro Nanite (em fase embrionária)</button>
 
-    </div>
+  </div>
 
 
 
-    <!-- Título e link recomendado -->
+  <!-- Título e link recomendado -->
 
-    <h2>PARA MUITAS HORAS DE ENTRETENIMENTO E POSSÍVEL REFLEXÃO VISITE O SITE ABAIXO</h2>
+  <h2>PARA MUITAS HORAS DE ENTRETENIMENTO E POSSÍVEL REFLEXÃO VISITE O SITE ABAIXO</h2>
 
-    <p><a href="http://surl.li/fcxdga" target="_blank">Ponto de Partida para Potenciais Posicionamentos Polêmicos - P6</a></p>
+  <p><a href="http://surl.li/fcxdga" target="_blank">Ponto de Partida para Potenciais Posicionamentos Polêmicos - P6</a></p>
 
 
 
-    <!-- Nota no rodapé -->
+  <!-- Nota no rodapé -->
 
-    <footer>
+  <footer>
 
-        Essa página utiliza um API (Application Programming Interface) para facilitar sua elaboração que, provavelmente, só funcionará corretamente em navegadores de ponta, como Chrome e Mozilla Firefox, dentre outros poucos e em suas versões para Windows ou MAC. Portanto, infelizmente, não executará suas funções corretamente em aparelhos mobile, como celulares e tablets, nem em navegadores mais limitados, como os de Smart TVs e o Silk dos aparelhos Echo Show (da Amazon), por exemplo.
+    Essa página utiliza um API (Application Programming Interface) para facilitar sua elaboração que, provavelmente, só funcionará corretamente em navegadores de ponta, como Chrome e Mozilla Firefox, dentre outros poucos e em suas versões para Windows ou MAC. Portanto, infelizmente, não executará suas funções corretamente em aparelhos mobile, como celulares e tablets, nem em navegadores mais limitados, como os de Smart TVs e o Silk dos aparelhos Echo Show (da Amazon), por exemplo.
 
-    </footer>
+  </footer>
 
 
 
-    <!-- Scripts -->
+  <!-- Scripts -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
 
-    <script>
+  <script>
 
-        let utterance = null;
+    let utterance = null;
 
-        let palavras = []; // Array para armazenar as palavras do texto
+    let palavras = []; // Array para armazenar as palavras do texto
 
-        let indiceAtual = 0; // Índice da palavra atual sendo lida
+    let indiceAtual = 0; // Índice da palavra atual sendo lida
 
-        let intervaloAtualizacao = null; // Intervalo para atualizar a tarja
+    let intervaloAtualizacao = null; // Intervalo para atualizar a tarja
 
 
 
-        // Função para extrair texto do PDF
+    // Função para extrair texto do PDF
 
-        async function extractTextFromPDF(url) {
+    async function extractTextFromPDF(url) {
 
-            const pdf = await pdfjsLib.getDocument(url).promise;
+      const pdf = await pdfjsLib.getDocument(url).promise;
 
-            let textoCompleto = '';
+      let textoCompleto = '';
 
 
 
-            for (let i = 1; i <= pdf.numPages; i++) {
+      for (let i = 1; i <= pdf.numPages; i++) {
 
-                const page = await pdf.getPage(i);
+        const page = await pdf.getPage(i);
 
-                const textContent = await page.getTextContent();
+        const textContent = await page.getTextContent();
 
-                textoCompleto += textContent.items.map(item => item.str).join(' ');
+        textoCompleto += textContent.items.map(item => item.str).join(' ');
 
-            }
+      }
 
 
 
-            return textoCompleto;
+      return textoCompleto;
+
+    }
+
+
+
+    // Função para ler texto em voz alta
+
+    function lerTexto(texto) {
+
+      if (utterance) {
+
+        speechSynthesis.cancel(); // Cancela a leitura atual, se houver
+
+      }
+
+
+
+      // Divide o texto em palavras
+
+      palavras = texto.split(/\s+/);
+
+      indiceAtual = 0;
+
+
+
+      utterance = new SpeechSynthesisUtterance(texto);
+
+      utterance.lang = 'pt-BR'; // Idioma português do Brasil
+
+      utterance.volume = document.getElementById('volume').value;
+
+      utterance.rate = document.getElementById('rate').value;
+
+      utterance.pitch = document.getElementById('pitch').value;
+
+
+
+      // Selecionar a voz
+
+      const vozes = speechSynthesis.getVoices();
+
+      const seletorVoz = document.getElementById('seletorVoz');
+
+      utterance.voice = vozes[seletorVoz.value];
+
+
+
+      // Atualiza volume, velocidade e tom em tempo real
+
+      document.getElementById('volume').addEventListener('input', () => {
+
+        utterance.volume = document.getElementById('volume').value;
+
+      });
+
+      document.getElementById('rate').addEventListener('input', () => {
+
+        utterance.rate = document.getElementById('rate').value;
+
+      });
+
+      document.getElementById('pitch').addEventListener('input', () => {
+
+        utterance.pitch = document.getElementById('pitch').value;
+
+      });
+
+
+
+      // Evento para acompanhar a leitura (palavra por palavra)
+
+      utterance.onboundary = (event) => {
+
+        if (event.name === 'word') {
+
+          const palavraIndex = event.charIndex; // Índice da palavra atual
+
+          indiceAtual = palavras.findIndex((palavra, index) => {
+
+            const inicioTexto = texto.indexOf(palavra, palavraIndex);
+
+            return inicioTexto === event.charIndex;
+
+          });
+
+          atualizarTarja();
 
         }
 
+      };
 
 
-        // Função para ler texto em voz alta
 
-        function lerTexto(texto) {
+      // Iniciar intervalo para atualizar a tarja (2 segundos)
 
-            if (utterance) {
+      if (intervaloAtualizacao) clearInterval(intervaloAtualizacao);
 
-                speechSynthesis.cancel(); // Cancela a leitura atual, se houver
+      intervaloAtualizacao = setInterval(atualizarTarja, 2000);
 
-            }
 
 
+      speechSynthesis.speak(utterance);
 
-            // Divide o texto em palavras
+    }
 
-            palavras = texto.split(/\s+/);
 
-            indiceAtual = 0;
 
+    // Função para atualizar a tarja (destaque da palavra atual)
 
+    function atualizarTarja() {
 
-            utterance = new SpeechSynthesisUtterance(texto);
+      const palavrasElementos = document.querySelectorAll('#conteudoPDF .highlight');
 
-            utterance.lang = 'pt-BR'; // Idioma português do Brasil
+      palavrasElementos.forEach(palavra => palavra.classList.remove('highlight'));
 
-            utterance.volume = document.getElementById('volume').value;
 
-            utterance.rate = document.getElementById('rate').value;
 
-            utterance.pitch = document.getElementById('pitch').value;
+      const palavraAtual = document.getElementById(`palavra-${indiceAtual}`);
 
+      if (palavraAtual) {
 
+        palavraAtual.classList.add('highlight');
 
-            // Selecionar a voz
+        palavraAtual.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            const vozes = speechSynthesis.getVoices();
+      }
 
-            const seletorVoz = document.getElementById('seletorVoz');
 
-            utterance.voice = vozes[seletorVoz.value];
 
+      // Atualizar barra de progresso
 
+      const progresso = (indiceAtual / palavras.length) * 100;
 
-            // Atualiza volume, velocidade e tom em tempo real
+      document.getElementById('barraProgresso').style.width = `${progresso}%`;
 
-            document.getElementById('volume').addEventListener('input', () => {
+    }
 
-                utterance.volume = document.getElementById('volume').value;
 
-            });
 
-            document.getElementById('rate').addEventListener('input', () => {
+    // Função para exibir o texto com IDs nas palavras
 
-                utterance.rate = document.getElementById('rate').value;
+    function exibirTexto(texto) {
 
-            });
+      const palavras = texto.split(/\s+/);
 
-            document.getElementById('pitch').addEventListener('input', () => {
+      const conteudoPDF = document.getElementById('conteudoPDF');
 
-                utterance.pitch = document.getElementById('pitch').value;
+      conteudoPDF.innerHTML = palavras.map((palavra, index) => {
 
-            });
+        return `<span id="palavra-${index}">${palavra}</span>`;
 
+      }).join(' ');
 
+    }
 
-            // Evento para acompanhar a leitura
 
-            utterance.onboundary = (event) => {
 
-                if (event.name === 'word') {
+    // Ler PDF fixo
 
-                    indiceAtual++;
+    document.getElementById('lerPDFFixo').addEventListener('click', async () => {
 
-                }
+      const url = 'https://raw.githubusercontent.com/psicspsix/LeituraPDFemVoz/main/PDFparaLeituraemVoz.pdf';
 
-            };
+      const texto = await extractTextFromPDF(url);
 
+      exibirTexto(texto);
 
+      lerTexto(texto);
 
-            // Iniciar intervalo para atualizar a tarja (2 segundos)
+    });
 
-            if (intervaloAtualizacao) clearInterval(intervaloAtualizacao);
 
-            intervaloAtualizacao = setInterval(atualizarTarja, 2000);
 
+    // Ler PDF carregado
 
+    document.getElementById('lerPDFUpload').addEventListener('click', async () => {
 
-            speechSynthesis.speak(utterance);
+      const file = document.getElementById('uploadPDF').files[0];
 
-        }
+      if (!file) {
 
+        alert('Por favor, selecione um arquivo PDF.');
 
+        return;
 
-        // Função para atualizar a tarja (destaque da palavra atual)
+      }
 
-        function atualizarTarja() {
 
-            const palavrasElementos = document.querySelectorAll('#conteudoPDF .highlight');
 
-            palavrasElementos.forEach(palavra => palavra.classList.remove('highlight'));
+      const fileReader = new FileReader();
 
+      fileReader.onload = async function(event) {
 
+        const url = event.target.result;
 
-            const palavraAtual = document.getElementById(`palavra-${indiceAtual}`);
+        const texto = await extractTextFromPDF(url);
 
-            if (palavraAtual) {
+        exibirTexto(texto);
 
-                palavraAtual.classList.add('highlight');
+        lerTexto(texto);
 
-                palavraAtual.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
 
-            }
+      fileReader.readAsDataURL(file);
 
+    });
 
 
-            // Atualizar barra de progresso
 
-            const progresso = (indiceAtual / palavras.length) * 100;
+    // Pausar leitura
 
-            document.getElementById('barraProgresso').style.width = `${progresso}%`;
+    document.getElementById('pausarLeitura').addEventListener('click', () => {
 
-        }
+      if (utterance && speechSynthesis.speaking) {
 
+        speechSynthesis.pause();
 
+        atualizarFeedbackVisual('Pausado');
 
-        // Função para exibir o texto com IDs nas palavras
+      }
 
-        function exibirTexto(texto) {
+    });
 
-            const palavras = texto.split(/\s+/);
 
-            const conteudoPDF = document.getElementById('conteudoPDF');
 
-            conteudoPDF.innerHTML = palavras.map((palavra, index) => {
+    // Continuar leitura
 
-                return `<span id="palavra-${index}">${palavra}</span>`;
+    document.getElementById('continuarLeitura').addEventListener('click', () => {
 
-            }).join(' ');
+      if (utterance && speechSynthesis.paused) {
 
-        }
+        speechSynthesis.resume();
 
+        atualizarFeedbackVisual('Lendo...');
 
+      }
 
-        // Ler PDF fixo
+    });
 
-        document.getElementById('lerPDFFixo').addEventListener('click', async () => {
 
-            const url = 'https://raw.githubusercontent.com/psicspsix/LeituraPDFemVoz/main/PDFparaLeituraemVoz.pdf';
 
-            const texto = await extractTextFromPDF(url);
+    // Repetir leitura
 
-            exibirTexto(texto);
+    document.getElementById('repetirLeitura').addEventListener('click', () => {
 
-            lerTexto(texto);
+      const textoRepetir = palavras.slice(indiceAtual - 10, indiceAtual + 10).join(' ');
 
-        });
+      lerTexto(textoRepetir);
 
+    });
 
 
-        // Ler PDF carregado
 
-        document.getElementById('lerPDFUpload').addEventListener('click', async () => {
+    // Carregar vozes disponíveis
 
-            const file = document.getElementById('uploadPDF').files[0];
+    function carregarVozes() {
 
-            if (!file) {
+      const vozes = speechSynthesis.getVoices();
 
-                alert('Por favor, selecione um arquivo PDF.');
+      const seletorVoz = document.getElementById('seletorVoz');
 
-                return;
 
-            }
 
+      vozes.forEach((voz, index) => {
 
+        const option = document.createElement('option');
 
-            const fileReader = new FileReader();
+        option.value = index;
 
-            fileReader.onload = async function(event) {
+        option.textContent = `${voz.name} (${voz.lang})`;
 
-                const url = event.target.result;
+        seletorVoz.appendChild(option);
 
-                const texto = await extractTextFromPDF(url);
+      });
 
-                exibirTexto(texto);
+    }
 
-                lerTexto(texto);
 
-            };
 
-            fileReader.readAsDataURL(file);
+    // Atualizar feedback visual
 
-        });
+    function atualizarFeedbackVisual(estado) {
 
+      const feedback = document.getElementById('feedback');
 
+      feedback.textContent = estado;
 
-        // Pausar leitura
+      feedback.style.color = estado === 'Lendo...' ? 'green' : 'red';
 
-        document.getElementById('pausarLeitura').addEventListener('click', () => {
+    }
 
-            if (utterance && speechSynthesis.speaking) {
 
-                speechSynthesis.pause();
 
-                atualizarFeedbackVisual('Pausado');
+    // Carregar configurações salvas
 
-            }
+    function carregarConfiguracoes() {
 
-        });
+      const configuracoes = JSON.parse(localStorage.getItem('configuracoesLeitor'));
 
+      if (configuracoes) {
 
+        document.getElementById('volume').value = configuracoes.volume;
 
-        // Continuar leitura
+        document.getElementById('rate').value = configuracoes.rate;
 
-        document.getElementById('continuarLeitura').addEventListener('click', () => {
+        document.getElementById('pitch').value = configuracoes.pitch;
 
-            if (utterance && speechSynthesis.paused) {
+        document.getElementById('seletorVoz').value = configuracoes.voz;
 
-                speechSynthesis.resume();
+      }
 
-                atualizarFeedbackVisual('Lendo...');
+    }
 
-            }
 
-        });
 
+    // Salvar configurações
 
+    function salvarConfiguracoes() {
 
-        // Repetir leitura
+      const configuracoes = {
 
-        document.getElementById('repetirLeitura').addEventListener('click', () => {
+        volume: document.getElementById('volume').value,
 
-            const textoRepetir = palavras.slice(indiceAtual - 10, indiceAtual + 10).join(' ');
+        rate: document.getElementById('rate').value,
 
-            lerTexto(textoRepetir);
+        pitch: document.getElementById('pitch').value,
 
-        });
+        voz: document.getElementById('seletorVoz').value
 
+      };
 
+      localStorage.setItem('configuracoesLeitor', JSON.stringify(configuracoes));
 
-        // Carregar vozes disponíveis
+    }
 
-        function carregarVozes() {
 
-            const vozes = speechSynthesis.getVoices();
 
-            const seletorVoz = document.getElementById('seletorVoz');
+    // Alternar tema
 
+    document.getElementById('alternarTema').addEventListener('click', () => {
 
+      document.body.classList.toggle('tema-claro');
 
-            vozes.forEach((voz, index) => {
+    });
 
-                const option = document.createElement('option');
 
-                option.value = index;
 
-                option.textContent = `${voz.name} (${voz.lang})`;
+    // Carregar PDF ao clicar nos botões de contos
 
-                seletorVoz.appendChild(option);
+    document.querySelectorAll('#botoesContos button').forEach(button => {
 
-            });
+      button.addEventListener('click', async () => {
 
-        }
+        const url = button.getAttribute('data-pdf');
 
+        const texto = await extractTextFromPDF(url);
 
+        exibirTexto(texto);
 
-        // Atualizar feedback visual
+        lerTexto(texto);
 
-        function atualizarFeedbackVisual(estado) {
+      });
 
-            const feedback = document.getElementById('feedback');
+    });
 
-            feedback.textContent = estado;
 
-            feedback.style.color = estado === 'Lendo...' ? 'green' : 'red';
 
-        }
+    // Carregar vozes e configurações ao iniciar
 
+    window.onload = () => {
 
+      carregarVozes();
 
-        // Carregar configurações salvas
+      carregarConfiguracoes();
 
-        function carregarConfiguracoes() {
+    };
 
-            const configuracoes = JSON.parse(localStorage.getItem('configuracoesLeitor'));
 
-            if (configuracoes) {
 
-                document.getElementById('volume').value = configuracoes.volume;
+    // Salvar configurações ao alterar
 
-                document.getElementById('rate').value = configuracoes.rate;
+    document.getElementById('volume').addEventListener('input', salvarConfiguracoes);
 
-                document.getElementById('pitch').value = configuracoes.pitch;
+    document.getElementById('rate').addEventListener('input', salvarConfiguracoes);
 
-                document.getElementById('seletorVoz').value = configuracoes.voz;
+    document.getElementById('pitch').addEventListener('input', salvarConfiguracoes);
 
-            }
+    document.getElementById('seletorVoz').addEventListener('change', salvarConfiguracoes);
 
-        }
-
-
-
-        // Salvar configurações
-
-        function salvarConfiguracoes() {
-
-            const configuracoes = {
-
-                volume: document.getElementById('volume').value,
-
-                rate: document.getElementById('rate').value,
-
-                pitch: document.getElementById('pitch').value,
-
-                voz: document.getElementById('seletorVoz').value
-
-            };
-
-            localStorage.setItem('configuracoesLeitor', JSON.stringify(configuracoes));
-
-        }
-
-
-
-        // Alternar tema
-
-        document.getElementById('alternarTema').addEventListener('click', () => {
-
-            document.body.classList.toggle('tema-claro');
-
-        });
-
-
-
-        // Carregar PDF ao clicar nos botões de contos
-
-        document.querySelectorAll('#botoesContos button').forEach(button => {
-
-            button.addEventListener('click', async () => {
-
-                const url = button.getAttribute('data-pdf');
-
-                const texto = await extractTextFromPDF(url);
-
-                exibirTexto(texto);
-
-                lerTexto(texto);
-
-            });
-
-        });
-
-
-
-        // Carregar vozes e configurações ao iniciar
-
-        window.onload = () => {
-
-            carregarVozes();
-
-            carregarConfiguracoes();
-
-        };
-
-
-
-        // Salvar configurações ao alterar
-
-        document.getElementById('volume').addEventListener('input', salvarConfiguracoes);
-
-        document.getElementById('rate').addEventListener('input', salvarConfiguracoes);
-
-        document.getElementById('pitch').addEventListener('input', salvarConfiguracoes);
-
-        document.getElementById('seletorVoz').addEventListener('change', salvarConfiguracoes);
-
-    </script>
+  </script>
 
 </body>
 
