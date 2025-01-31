@@ -18,11 +18,15 @@
 
             margin: 20px;
 
+            background-color: #000;
+
+            color: #fff;
+
         }
 
         h1 {
 
-            color: #333;
+            color: #fff;
 
         }
 
@@ -50,13 +54,37 @@
 
             padding: 10px;
 
-            border: 1px solid #ccc;
+            border: 1px solid #444;
 
-            background-color: #f9f9f9;
+            background-color: #222;
+
+            color: #fff;
 
             max-height: 300px;
 
             overflow-y: auto;
+
+        }
+
+        button {
+
+            background-color: #444;
+
+            color: #fff;
+
+            border: none;
+
+            padding: 10px 15px;
+
+            margin: 5px;
+
+            cursor: pointer;
+
+        }
+
+        button:hover {
+
+            background-color: #666;
 
         }
 
@@ -88,9 +116,13 @@
 
 
 
-    <!-- Botão para ler o PDF fixo -->
+    <!-- Botões de controle -->
 
     <button id="lerPDFFixo">Ler PDF Fixo em Voz Alta</button>
+
+    <button id="pausarLeitura">Pausar</button>
+
+    <button id="continuarLeitura">Continuar</button>
 
 
 
@@ -114,6 +146,10 @@
 
     <script>
 
+        let utterance = null;
+
+
+
         // Função para extrair texto do PDF
 
         async function extractTextFromPDF(url) {
@@ -136,8 +172,6 @@
 
                 textoCompleto += textContent.items.map(item => {
 
-                    // Se o item tem uma propriedade "hasEOL" (fim de linha), adicionamos um espaço
-
                     return item.str + (item.hasEOL ? ' ' : '');
 
                 }).join('');
@@ -156,13 +190,39 @@
 
         function lerTexto(texto) {
 
-            const utterance = new SpeechSynthesisUtterance(texto);
+            if (utterance) {
+
+                speechSynthesis.cancel(); // Cancela a leitura atual, se houver
+
+            }
+
+
+
+            utterance = new SpeechSynthesisUtterance(texto);
 
             utterance.lang = 'pt-BR'; // Idioma português do Brasil
 
             utterance.volume = document.getElementById('volume').value;
 
             utterance.rate = document.getElementById('rate').value;
+
+
+
+            // Atualiza volume e velocidade em tempo real
+
+            document.getElementById('volume').addEventListener('input', () => {
+
+                utterance.volume = document.getElementById('volume').value;
+
+            });
+
+            document.getElementById('rate').addEventListener('input', () => {
+
+                utterance.rate = document.getElementById('rate').value;
+
+            });
+
+
 
             speechSynthesis.speak(utterance);
 
@@ -217,6 +277,34 @@
             };
 
             fileReader.readAsDataURL(file);
+
+        });
+
+
+
+        // Pausar leitura
+
+        document.getElementById('pausarLeitura').addEventListener('click', () => {
+
+            if (utterance && speechSynthesis.speaking) {
+
+                speechSynthesis.pause();
+
+            }
+
+        });
+
+
+
+        // Continuar leitura
+
+        document.getElementById('continuarLeitura').addEventListener('click', () => {
+
+            if (utterance && speechSynthesis.paused) {
+
+                speechSynthesis.resume();
+
+            }
 
         });
 
